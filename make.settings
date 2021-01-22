@@ -1,0 +1,5 @@
+#PLATFORM_TOOL = arm-linux-gnueabihf-
+PLATFORM_TOOL =
+CC := $(PLATFORM_TOOL)gcc
+AR := $(PLATFORM_TOOL)ar
+LD：= $(PLATFORM_TOOL)ld
