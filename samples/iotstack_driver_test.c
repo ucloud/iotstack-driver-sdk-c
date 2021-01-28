@@ -4,8 +4,13 @@
 static void edge_normal_msg_handler_user(char *topic, char *payload)
 {
     log_write(LOG_INFO, "topic:%s payload:%s", topic, payload);
-    if(edge_rrpc_check(topic) == EDGE_OK)
-        edge_rrpc_response(topic,"rrpc response test!");
+    return;
+}
+
+static void edge_rrpc_msg_handler_user(char *topic, char *payload)
+{
+    log_write(LOG_INFO, "rrpc topic:%s payload:%s", topic, payload);
+    edge_rrpc_response(topic, "rrpc response message!");
     return;
 }
 
@@ -122,7 +127,7 @@ int main(int argc, char **argv)
         }
         
         // 初始化一个子设备
-        subdevClient = edge_subdev_construct(arrary_productsn->valuestring, arrary_devicesn->valuestring, edge_normal_msg_handler_user);
+        subdevClient = edge_subdev_construct(arrary_productsn->valuestring, arrary_devicesn->valuestring, edge_normal_msg_handler_user, edge_rrpc_msg_handler_user);
         if(NULL == subdevClient)
         {
             log_write(LOG_ERROR, "edge construct fail!");

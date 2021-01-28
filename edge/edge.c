@@ -272,7 +272,16 @@ static void _on_local_message(natsConnection *nc, natsSubscription *sub, natsMsg
         log_write(LOG_WARN, "cannot find conn device[%s]", subdev_client_tmp.device_sn);
         goto end;
     }
+
     pst_subdev_client = (subdev_client *)node_tmp->val;
+
+    if(pst_subdev_client->rrpc_msg_handle){
+        if(edge_rrpc_check(topic->valuestring) == EDGE_OK){
+            pst_subdev_client->rrpc_msg_handle(topic->valuestring, msg_base64decode);
+            goto end;
+        }
+    }
+
     if(pst_subdev_client->normal_msg_handle)
         pst_subdev_client->normal_msg_handle(topic->valuestring, msg_base64decode);
 

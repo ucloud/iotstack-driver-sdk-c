@@ -4,7 +4,7 @@
 #include <errno.h>
 #include "client.h"
 
-subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle)
+subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle, edge_rrpc_msg_handler rrpc_msg_handle)
 {
     subdev_client *pst_subdev_client;    
 
@@ -23,6 +23,7 @@ subdev_client * edge_subdev_construct(const char *product_sn, const char *device
     pst_subdev_client->product_sn           = product_sn;
     pst_subdev_client->device_sn            = device_sn;
     pst_subdev_client->normal_msg_handle    = normal_msg_handle;
+    pst_subdev_client->rrpc_msg_handle      = rrpc_msg_handle;
     return pst_subdev_client;
 }
 
@@ -528,11 +529,11 @@ void log_write(log_level level, const char *format,...)
 
 edge_status edge_rrpc_check(char *topic)
 {
-	if(strstr(topic,"/rrpc/request/") == NULL){
+    if(strstr(topic,"/rrpc/request/") == NULL){
         return EDGE_ERR; 
-	}else{
+    }else{
         return EDGE_OK;
-	}
+}
 }
 
 edge_status edge_rrpc_response(char *topic,char *payload)
@@ -540,7 +541,7 @@ edge_status edge_rrpc_response(char *topic,char *payload)
     edge_status status; 
     char response_topic[128];
     _replace_str(response_topic, topic, "request", "response");
-	status = edge_publish(response_topic, payload);
+    status = edge_publish(response_topic, payload);
     if(EDGE_OK != status){
         log_write(LOG_ERROR, "edge_publish rrpc fail");
         return EDGE_ERR;

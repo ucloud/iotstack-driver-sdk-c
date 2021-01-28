@@ -7,6 +7,9 @@
 // normal message
 typedef void (*edge_normal_msg_handler)(char *topic, char *payload);
 
+// rrpc message
+typedef void (*edge_rrpc_msg_handler)(char *topic, char *payload);
+
 typedef enum
 {
     SUBDEV_LOGIN  = 0,
@@ -25,6 +28,7 @@ typedef struct
     const char                  *product_sn;  
     const char                  *device_sn;
     edge_normal_msg_handler     normal_msg_handle;
+    edge_rrpc_msg_handler       rrpc_msg_handle;
 }subdev_client;
 
 typedef enum
@@ -121,10 +125,11 @@ void log_print(const char *format,...);
  * @param product_sn:               指定产品序列号
  * @param device_sn:                指定设备序列号
  * @param normal_msg_handle:        接收消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload)). 
+ * @param rrpc_msg_handle           接收rrpc消息回调处理接口(void (*edge_rrpc_msg_handler)(char *topic, char *payload)). 
  *
  * @retval : 成功则返回句柄，失败返回NULL
  */
-subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle);
+subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle,edge_rrpc_msg_handler rrpc_msg_handle);
 
 
 /**
