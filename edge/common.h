@@ -43,7 +43,7 @@
 #define LOG_IN_OUT_FORMAT                   "{\"src\": \"local\",\"topic\": \"/$system/%s/%s/subdev/%s\",\"payload\": \"%s\"}"
 #define LOG_IN_OUT_FORMAT_PAYLOAD           "{\"RequestID\": \"%u\",\"Params\": [{\"ProductSN\": \"%s\",\"DeviceSN\": \"%s\"}]}"
 
-#define LOG_UPLOAD_FORMAT                   "{\"module\": \"%s\",\"level\": \"%s\",\"message\": \"%s\",\"timestamp\": %ld}"
+#define LOG_UPLOAD_FORMAT                   "{\"module\": \"drv_%s\",\"level\": \"%s\",\"message\": \"%s\",\"timestamp\": %ld}"
 #define LOG_SET_FORMAT                      "{\"level\": \"%s\",\"size\": %d,\"number\": %d}"
 
 extern char *driver_name;
