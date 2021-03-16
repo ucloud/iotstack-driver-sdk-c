@@ -37,11 +37,11 @@ edge_status _publish_string(const char *subj, const char *str)
     return status;
 }
 
-edge_status edge_publish(const char *topic, const char *str)
+edge_status edge_publish(const char *topic, const char *data, int dataLen)
 {
     edge_status status;
 
-    if((NULL == topic) || (NULL == str))
+    if((NULL == topic) || (NULL == data))
     {
         return EDGE_INVALID_ARG;
     }
@@ -53,8 +53,8 @@ edge_status edge_publish(const char *topic, const char *str)
         return EDGE_NO_MEMORY;
     }
     memset(normal_payload_base64, 0, NATS_MSG_MAX_LEN);
-    base64_encode(str, strlen(str), normal_payload_base64);
-    log_write(LOG_DEBUG, "dyn_reg_payload_base64:%s",normal_payload_base64);
+    base64_encode(data, dataLen, normal_payload_base64);
+    log_write(LOG_DEBUG, "send data:%s",data);
 
     char *normal_msg = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
     if(NULL == normal_msg)
@@ -71,6 +71,15 @@ edge_status edge_publish(const char *topic, const char *str)
     
     EDGE_FREE(normal_payload_base64);    
     EDGE_FREE(normal_msg);
+    return status;
+}
+
+edge_status edge_publishString(const char *topic, const char *str)
+{
+    edge_status status;
+
+    status = edge_publish(topic,str,strlen(str));
+
     return status;
 }
 
@@ -536,12 +545,12 @@ edge_status edge_rrpc_check(char *topic)
 }
 }
 
-edge_status edge_rrpc_response(char *topic,char *payload)
+edge_status edge_rrpc_response(char *topic,char *payload, int payloadLen)
 {
     edge_status status; 
     char response_topic[128];
     _replace_str(response_topic, topic, "request", "response");
-    status = edge_publish(response_topic, payload);
+    status = edge_publish(response_topic, payload, payloadLen);
     if(EDGE_OK != status){
         log_write(LOG_ERROR, "edge_publish rrpc fail");
         return EDGE_ERR;
