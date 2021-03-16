@@ -33,23 +33,36 @@ edge_status edge_common_init(void)
  *
  * @param product_sn:               指定产品序列号
  * @param device_sn:                指定设备序列号
- * @param normal_msg_handle:        消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload)). 
+ * @param normal_msg_handle:        消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload, int payloadLen)). 
+ * @param edge_rrpc_msg_handler:    RRPC消息回调处理接口(void (*edge_rrpc_msg_handler)(char *topic, char *payload, int payloadLen)).  
  *
  * @retval : 成功则返回句柄，失败返回NULL
  */
  
-subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle)
+subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle, edge_rrpc_msg_handler rrpc_msg_handle)
 
 /**
- * @brief 向指定topic发送一条消息
+ * @brief 向指定topic发送一条消息,可以发送二进制消息
  *
  * @param topic:                    topic名称
- * @param str:                      发送消息内容
+ * @param data:                     发送消息内容
+ * @param dataLen:                  发送消息内容长度
  *
  * @retval : 成功则返回EDGE_OK
  */
  
-edge_status edge_publish(const char *topic, const char *str)
+edge_status edge_publish(const char *topic, const char *data, int dataLen)
+
+/**
+ * @brief 向指定topic发送一条字符串消息
+ *
+ * @param topic:                    topic名称
+ * @param str:                      发送字符串内容
+ *
+ * @retval : 成功则返回EDGE_OK
+ */
+
+edge_status edge_publishString(const char *topic, const char *str)
 
 /**
  * @brief 动态注册一个子设备
@@ -187,18 +200,6 @@ edge_status edge_add_topo(subdev_client *pst_subdev_client, uint32_t time_out_ms
  */
  
 edge_status edge_delete_topo(subdev_client *pst_subdev_client, uint32_t time_out_ms)
-
-/**
- * @brief 设置日志记录等级，日志文件大小和文件个数（一天一个日志文件）
- *
- * @param level:        日志等级分为：DEBUG、INFO、WARNING、ERROR、RITICAL
- * @param file_size_mb: 单个日志文件大小
- * @param file_number:  日志文件个数
- *
- * @retval : 成功则返回EDGE_OK
- */
- 
-edge_status edge_set_log(log_level level, uint32_t file_size_mb, uint32_t file_number)
 
 /**
  * @brief 记录日志
