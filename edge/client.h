@@ -5,10 +5,10 @@
 #include "nats.h"
 
 // normal message
-typedef void (*edge_normal_msg_handler)(char *topic, char *payload);
+typedef void (*edge_normal_msg_handler)(char *topic, char *payload, int payloadLen);
 
 // rrpc message
-typedef void (*edge_rrpc_msg_handler)(char *topic, char *payload);
+typedef void (*edge_rrpc_msg_handler)(char *topic, char *payload, int payloadLen);
 
 typedef enum
 {
@@ -124,23 +124,33 @@ void log_print(const char *format,...);
  *
  * @param product_sn:               指定产品序列号
  * @param device_sn:                指定设备序列号
- * @param normal_msg_handle:        接收消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload)). 
- * @param rrpc_msg_handle           接收rrpc消息回调处理接口(void (*edge_rrpc_msg_handler)(char *topic, char *payload)). 
+ * @param normal_msg_handle:        接收消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload, int payloadLen)). 
+ * @param rrpc_msg_handle           接收rrpc消息回调处理接口(void (*edge_rrpc_msg_handler)(char *topic, char *payload, int payloadLen)). 
  *
  * @retval : 成功则返回句柄，失败返回NULL
  */
 subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle,edge_rrpc_msg_handler rrpc_msg_handle);
 
-
 /**
- * @brief 向topic发送一条消息
+ * @brief 向topic发送一条数据，可以用来传输二进制流
  *
- * @param topic:               		topic名称
- * @param str:                		发送消息内容
+ * @param topic:                    topic名称
+ * @param str:                      发送消息内容
+ * @param dataLen:                  消息内容的长度
  *
  * @retval : 成功则返回EDGE_OK
  */
-edge_status edge_publish(const char *topic, const char *str);
+edge_status edge_publish(const char *topic, const char *data, int dataLen);
+
+/**
+ * @brief 向topic发送字符串消息
+ *
+ * @param topic:                    topic名称
+ * @param str:                      发送消息内容
+ *
+ * @retval : 成功则返回EDGE_OK
+ */
+edge_status edge_publishString(const char *topic, const char *data);
 
 /**
  * @brief 动态注册一个子设备
@@ -214,11 +224,11 @@ edge_status edge_rrpc_check(char *topic);
  * @brief rrpc response
  *
  * @param topic:        rrpc消息topic
- *
  * @param payload:      rrpc回复内容
+ * @param payloadLen:   rrpc回复内容长度
  *
  * @retval : 成功返回EDGE_OK
  */
-edge_status edge_rrpc_response(char *topic,char *payload);
+edge_status edge_rrpc_response(char *topic,char *payload, int payloadLen);
 
 #endif

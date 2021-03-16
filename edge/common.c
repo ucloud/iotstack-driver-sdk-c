@@ -184,7 +184,7 @@ int base64_decode(const char *indata, int inlen, char *outdata) {
             y = t = 0;
         }
     }
-    return ret;
+    return i;
 }
 
 int calc_file_len(const char *file_path)

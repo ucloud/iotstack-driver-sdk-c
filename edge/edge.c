@@ -260,7 +260,7 @@ static void _on_local_message(natsConnection *nc, natsSubscription *sub, natsMsg
         return;
     }
     memset(msg_base64decode, 0, NATS_MSG_MAX_LEN);
-    base64_decode(msg_base64code->valuestring, strlen(msg_base64code->valuestring), msg_base64decode);
+    int msg_base64decodeLen = base64_decode(msg_base64code->valuestring, strlen(msg_base64code->valuestring), msg_base64decode);
     log_write(LOG_DEBUG, "_on_local_message msg_base64decode:%s", msg_base64decode);
     
     subdev_client subdev_client_tmp = {0};
@@ -277,13 +277,13 @@ static void _on_local_message(natsConnection *nc, natsSubscription *sub, natsMsg
 
     if(pst_subdev_client->rrpc_msg_handle){
         if(edge_rrpc_check(topic->valuestring) == EDGE_OK){
-            pst_subdev_client->rrpc_msg_handle(topic->valuestring, msg_base64decode);
+            pst_subdev_client->rrpc_msg_handle(topic->valuestring, msg_base64decode, msg_base64decodeLen);
             goto end;
         }
     }
 
     if(pst_subdev_client->normal_msg_handle)
-        pst_subdev_client->normal_msg_handle(topic->valuestring, msg_base64decode);
+        pst_subdev_client->normal_msg_handle(topic->valuestring, msg_base64decode, msg_base64decodeLen);
 
 end:
     cJSON_Delete(msg_json);
