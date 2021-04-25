@@ -266,19 +266,4 @@ void natsMutex_Destroy(natsMutex *m)
     EDGE_FREE(m);
 }
 
-void natsTimer_Init(nats_timer      *pst_nats_timer, timer_handle timer_handle_func)
-{        
-    struct itimerval timer;
-
-    timer.it_interval.tv_sec = pst_nats_timer->interval_sec;
-    timer.it_interval.tv_usec = pst_nats_timer->interval_usec;
-    timer.it_value.tv_sec = pst_nats_timer->effect_sec;
-    timer.it_value.tv_usec = pst_nats_timer->effect_usec;
-
-    setitimer(ITIMER_REAL, &timer, NULL);//让它产生SIGVTALRM信号
-    
-    //为SIGALRM注册信号处理函数
-    signal(SIGALRM, timer_handle_func);
-    return;
-}
 

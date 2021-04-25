@@ -10,7 +10,7 @@ target = iotstack_driver_test
 all : $(target)
 
 $(target) :
-	$(CC) -o $(target) $(src) $(LIBS) $(INCLUDE) $(CFLAGS)
+	$(CC) -o $(target) $(src) $(LIBS) $(INCLUDE) $(CFLAGS) -lrt
 
 clean:
 	-$(RM) $(target) $(target).o
