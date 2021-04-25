@@ -188,7 +188,7 @@ int main(int argc, char **argv)
         log_write(LOG_DEBUG, "send message[%s]", time_stamp);
         
         status = edge_publishString(topic_str, time_stamp);
-		//spuuprt publish binary message
+		//add publish binary message
         status |= edge_publish(topic_str, "0D0A2131", 8);
         if(EDGE_OK != status)
         {
