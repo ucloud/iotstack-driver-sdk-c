@@ -81,8 +81,7 @@ natsStatus natsMutex_Create(natsMutex **newMutex);
 void natsMutex_Lock(natsMutex *m);
 void natsMutex_Unlock(natsMutex *m);
 void natsMutex_Destroy(natsMutex *m);
-typedef void (* timer_handle)(int signo);
-void natsTimer_Init(nats_timer      *pst_nats_timer, timer_handle timer_handle_func);
+
 
 #endif
 

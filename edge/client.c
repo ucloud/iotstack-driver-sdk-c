@@ -479,7 +479,7 @@ void log_print(const char *format,...)
     va_list args;
 
     va_start(args, format);
-    printf(format, args);
+    vprintf(format, args);
     va_end(args);
 
     fflush(stdout);
@@ -491,7 +491,7 @@ void log_write(log_level level, const char *format,...)
     {
         return;
     }
-    const char *log_lev[5] = {"debug", "info", "warn", "error"};
+    const char *log_lev[4] = {"debug", "info", "warn", "error"};
     struct timeval stamp;
     char *msg_str_rep = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
     if(NULL == msg_str_rep)

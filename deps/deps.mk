@@ -21,5 +21,5 @@ all :
 	cp $(LIB_CJSON_TAR)/cJSON.h $(LIB_CJSON_DIR)
 
 clean :	
-	cd $(LIB_NATS_TAR) && $(MAKE) clean
-	cd $(LIB_CJSON_TAR) && $(MAKE) clean
+	rm -rf $(LIB_NATS_TAR)
+	rm -rf $(LIB_CJSON_TAR)
