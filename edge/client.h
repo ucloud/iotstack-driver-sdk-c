@@ -231,4 +231,16 @@ edge_status edge_rrpc_check(char *topic);
  */
 edge_status edge_rrpc_response(char *topic,char *payload, int payloadLen);
 
+/**
+ * @brief 向nats subject
+ *
+ * @param subject:        nats subject
+ * @param data:         发送数据
+ * @param dataLen:      发送数据长度
+ *
+ * @retval : 成功返回EDGE_OK
+ */
+
+edge_status nats_publish(const char *subject, const char *data, int dataLen);
+
 #endif

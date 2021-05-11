@@ -26,6 +26,7 @@ natsSubscription *sub = NULL;
 bool edge_state = false;
 edge_topo_notify_handler  edge_topo_handle = NULL;
 edge_subdev_status_handler edge_subdev_status_handle = NULL;
+edge_nats_msg_handler edge_nats_msg_handle = NULL;
 /*  global variable end  */
 
 static edge_status _edge_subscribe(const char *subject, natsMsgHandler cb, void *cbClosure)
@@ -208,6 +209,13 @@ void edge_set_subdev_status_handle(edge_subdev_status_handler subdev_status_hand
 {
     if(NULL != subdev_status_handle)
         edge_subdev_status_handle = subdev_status_handle;
+    return;
+}
+
+void edge_set_nats_msg_handle(edge_nats_msg_handler nats_msg_handle)
+{
+    if(NULL != nats_msg_handle)
+        edge_nats_msg_handle = nats_msg_handle;
     return;
 }
 
@@ -416,6 +424,28 @@ static void _on_edge_state_message(natsConnection *nc, natsSubscription *sub, na
     natsMsg_Destroy(msg);
     return;
 }
+
+static void _on_nats_message(natsConnection *nc, natsSubscription *sub, natsMsg *msg, void *closure)
+{
+    log_write(LOG_DEBUG, "Received local msg: %s - %.*s", natsMsg_GetSubject(msg), natsMsg_GetDataLength(msg), natsMsg_GetData(msg));
+    
+    char *msg_base64decode = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
+    if(NULL == msg_base64decode)
+    {
+        log_write(LOG_ERROR, "msg_base64decode malloc fail!");
+        return;
+    }
+    memset(msg_base64decode, 0, NATS_MSG_MAX_LEN);
+    int msg_base64decodeLen = base64_decode(natsMsg_GetData(msg), natsMsg_GetDataLength(msg), msg_base64decode);
+    log_write(LOG_DEBUG, "_on_local_message msg_base64decode:%s", msg_base64decode);
+
+    if(edge_nats_msg_handle)
+        edge_nats_msg_handle((char *)natsMsg_GetSubject(msg), msg_base64decode, msg_base64decodeLen);
+
+    EDGE_FREE(msg_base64decode);     
+    return;
+}
+
 
 bool edge_get_online_status(void)
 {
@@ -896,6 +926,14 @@ edge_status edge_delete_topo(subdev_client *pst_subdev_client, uint32_t time_out
     status = EDGE_PROTOCOL_ERROR;
 end:
     _remove_from_list(requestid_list, (void *)msg_parse_str, requestid_list_mutex);    
+    return status;
+}
+
+edge_status nats_subscribe(const char *subject)
+{
+	edge_status status;    
+    
+    status = _edge_subscribe(subject, _on_nats_message, NULL);
     return status;
 }
 

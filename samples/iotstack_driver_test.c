@@ -27,6 +27,12 @@ static void edge_subdev_status_handler_user(subdev_able opera,char *payload)
     return;
 }
 
+static void edge_nats_msg_handler_user(char *topic, char *payload, int payloadLen)
+{
+    log_write(LOG_INFO, "topic:%s payload:%s payloadLen:%d", topic, payload, payloadLen);
+    return;
+}
+
 int main(int argc, char **argv)
 {
     edge_status         status     = EDGE_OK;
@@ -65,6 +71,16 @@ int main(int argc, char **argv)
     edge_set_topo_notify_handle(edge_topo_notify_handler_user);
     
     edge_set_subdev_status_handle(edge_subdev_status_handler_user);
+
+    edge_set_nats_msg_handle(edge_nats_msg_handler_user);
+
+    //subscribe nats subject
+    status = nats_subscribe("/a/b/c");
+    if(EDGE_OK != status)
+    {
+        log_write(LOG_ERROR, "nats_subscribe nats topic fail");
+        return EDGE_ERR;
+    }
 
     // 解析驱动配置
     /* 
@@ -193,6 +209,12 @@ int main(int argc, char **argv)
         if(EDGE_OK != status)
         {
             log_write(LOG_ERROR, "edge_publish fail");
+            goto end;
+        }
+		status = nats_publish("/a/b/c",time_stamp,strlen(time_stamp));
+        if(EDGE_OK != status)
+        {
+            log_write(LOG_ERROR, "edge_publish nats subject fail");
             goto end;
         }
     }

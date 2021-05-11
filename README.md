@@ -159,6 +159,16 @@ void edge_set_topo_notify_handle(edge_topo_notify_handler topo_notify_handle)
 void edge_set_subdev_status_handle(edge_subdev_status_handler subdev_status_handle)
 
 /**
+ * @brief 设置nats消息回调接口
+ *
+ * @param nats_msg_handle:	nats 消息回调接口(void (*edge_nats_msg_handler)(char *topic, char *payload, int payloadLen)).
+ *
+ * @retval : void
+ */
+
+void edge_set_nats_msg_handle(edge_nats_msg_handler nats_msg_handle)
+
+/**
  * @brief 获取网关在线状态
  *
  * @param void
@@ -212,3 +222,23 @@ edge_status edge_delete_topo(subdev_client *pst_subdev_client, uint32_t time_out
  
 void log_write(log_level level, const char *format,...)
 
+/**
+ * @brief 向指定 nats subject,可以发送二进制消息
+ *
+ * @param subject:                  subject名称
+ * @param data:                     发送消息内容
+ * @param dataLen:                  发送消息内容长度
+ *
+ * @retval : 成功则返回EDGE_OK
+ */
+ 
+edge_status nats_publish(const char *subject, const char *data, int dataLen)
+
+/**
+ * @brief  订阅nats subject
+ *
+ * @param subject:  nats subject名称
+ *
+ * @retval : 成功则返回EDGE_OK
+ */
+edge_status nats_subscribe(const char *subject)
