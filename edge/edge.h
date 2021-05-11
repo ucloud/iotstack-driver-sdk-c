@@ -22,6 +22,9 @@ typedef void (*edge_topo_notify_handler)(topo_operation opera, char *payload);
 // /topic:$system/{productSN}/{deviceSN}/subdev/enable || /$system/{productSN}/{deviceSN}/subdev/delete msg handle
 typedef void (*edge_subdev_status_handler)(subdev_able opera,char *payload);
 
+//nats message handle
+typedef void (*edge_nats_msg_handler)(char *topic, char *payload, int payloadLen);
+
 /**
  * @brief 获取驱动信息
  *
@@ -86,6 +89,15 @@ void edge_set_topo_notify_handle(edge_topo_notify_handler          topo_notify_h
 void edge_set_subdev_status_handle(edge_subdev_status_handler subdev_status_handle);
 
 /**
+ * @brief 设置nats消息回调接口（控制台启动禁用设备）
+ *
+ * @param nats_msg_handle:	nats消息回调接口(void (*edge_nats_msg_handler)(char *topic, char *payload, int payloadLen)).
+ *
+ * @retval : void
+ */
+void edge_set_nats_msg_handle(edge_nats_msg_handler nats_msg_handle);
+
+/**
  * @brief 获取子设备拓扑
  *
  * @param pst_subdev_client:        子设备句柄
@@ -114,5 +126,14 @@ edge_status edge_add_topo(subdev_client *pst_subdev_client, uint32_t time_out_ms
  * @retval : 成功则返回EDGE_OK
  */
 edge_status edge_delete_topo(subdev_client *pst_subdev_client, uint32_t time_out_ms);
+
+/**
+ * @brief 订阅nats subject
+ *
+ * @param subject:         nats subject
+ *
+ * @retval : 成功则返回EDGE_OK
+ */
+edge_status nats_subscribe(const char *subject);
 
 #endif

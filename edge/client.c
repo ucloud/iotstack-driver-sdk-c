@@ -83,6 +83,24 @@ edge_status edge_publishString(const char *topic, const char *str)
     return status;
 }
 
+edge_status nats_publish(const char *subject, const char *data, int dataLen)
+{
+    edge_status status;
+
+    char *normal_payload_base64 = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
+    if(NULL == normal_payload_base64)
+    {
+        log_write(LOG_ERROR, "normal_payload_base64 malloc fail!");
+        return EDGE_NO_MEMORY;
+    }
+    memset(normal_payload_base64, 0, NATS_MSG_MAX_LEN);
+    base64_encode(data, dataLen, normal_payload_base64);
+
+    status = _publish_string(subject, normal_payload_base64);
+
+    return status;
+}
+
 edge_status _msg_parse_str_init(msg_parse **msg_parse_str, uint32_t request_id)
 {
     *msg_parse_str = (msg_parse *)EDGE_MALLOC(sizeof(msg_parse));
